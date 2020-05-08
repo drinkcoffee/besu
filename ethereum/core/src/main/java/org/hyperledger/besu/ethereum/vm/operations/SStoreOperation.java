@@ -27,6 +27,7 @@ import java.util.EnumSet;
 import java.util.Optional;
 
 import org.apache.tuweni.units.bigints.UInt256;
+import org.hyperledger.besu.ethereum.vm.VmView;
 
 public class SStoreOperation extends AbstractOperation {
 
@@ -63,6 +64,7 @@ public class SStoreOperation extends AbstractOperation {
 
     account.setStorageValue(key, value);
     frame.storageWasUpdated(key, value.toBytes());
+    VmView.addStorageWritten(frame.getContractAddress(), key.toBigInteger());
   }
 
   @Override

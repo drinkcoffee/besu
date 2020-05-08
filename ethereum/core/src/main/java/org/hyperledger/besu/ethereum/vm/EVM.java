@@ -16,6 +16,7 @@ package org.hyperledger.besu.ethereum.vm;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
+import org.hyperledger.besu.ethereum.core.Address;
 import org.hyperledger.besu.ethereum.core.Gas;
 import org.hyperledger.besu.ethereum.vm.MessageFrame.State;
 import org.hyperledger.besu.ethereum.vm.ehalt.ExceptionalHaltException;
@@ -47,9 +48,19 @@ public class EVM {
 
   public void runToHalt(final MessageFrame frame, final OperationTracer operationTracer)
       throws ExceptionalHaltException {
+
+    Bytes input = frame.getInputData();
+    Bytes function = input; //input.slice(0,4);
+    Address addr = frame.getContractAddress();
+    VmView.resetForNewCall(addr, function);
+
+
+
     while (frame.getState() == MessageFrame.State.CODE_EXECUTING) {
       executeNextOperation(frame, operationTracer);
     }
+
+    LOG.info(VmView.executionSummary());
   }
 
   public void forEachOperation(
@@ -68,6 +79,14 @@ public class EVM {
 
   private void executeNextOperation(final MessageFrame frame, final OperationTracer operationTracer)
       throws ExceptionalHaltException {
+
+    Bytes input = frame.getInputData();
+    Bytes function = input; //input.slice(0,4);
+    Address addr = frame.getContractAddress();
+    final Operation curOp = operationAtOffset(frame.getCode(), frame.getContractAccountVersion(), frame.getPC());
+    VmView.addCodeTouched(addr, function, frame.getCode(), frame.getPC(), curOp.getOpSize());
+
+
     frame.setCurrentOperation(
         operationAtOffset(frame.getCode(), frame.getContractAccountVersion(), frame.getPC()));
     evaluateExceptionalHaltReasons(frame);

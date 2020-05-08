@@ -22,6 +22,7 @@ import org.hyperledger.besu.ethereum.vm.MessageFrame;
 
 import org.apache.tuweni.bytes.Bytes32;
 import org.apache.tuweni.units.bigints.UInt256;
+import org.hyperledger.besu.ethereum.vm.VmView;
 
 public class SLoadOperation extends AbstractOperation {
 
@@ -42,5 +43,6 @@ public class SLoadOperation extends AbstractOperation {
     assert account != null : "VM account should exist";
 
     frame.pushStackItem(account.getStorageValue(UInt256.fromBytes(key)).toBytes());
+    VmView.addStorageRead(frame.getContractAddress(), UInt256.fromBytes(key).toBigInteger());
   }
 }

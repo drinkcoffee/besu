@@ -235,6 +235,7 @@ public class MainnetTransactionProcessor implements TransactionProcessor {
     final ReturnStack returnStack = new ReturnStack(MessageFrame.DEFAULT_MAX_RETURN_STACK_SIZE);
 
     if (transaction.isContractCreation()) {
+      LOG.info("TODO: Contract Creation");
       final Address contractAddress =
           Address.contractAddress(senderAddress, sender.getNonce() - 1L);
 
@@ -305,6 +306,7 @@ public class MainnetTransactionProcessor implements TransactionProcessor {
     while (!messageFrameStack.isEmpty()) {
       process(messageFrameStack.peekFirst(), operationTracer);
     }
+    LOG.info("TODO: Processing Complete");
 
     if (initialFrame.getState() == MessageFrame.State.COMPLETED_SUCCESS) {
       worldUpdater.commit();

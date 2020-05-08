@@ -61,12 +61,15 @@ public class EthSendRawTransaction implements JsonRpcMethod {
 
   @Override
   public JsonRpcResponse response(final JsonRpcRequestContext requestContext) {
+    LOG.info("TODO: Here1");
     if (requestContext.getRequest().getParamLength() != 1) {
       return new JsonRpcErrorResponse(
           requestContext.getRequest().getId(), JsonRpcError.INVALID_PARAMS);
     }
+    LOG.info("TODO: Here2");
     final String rawTransaction = requestContext.getRequiredParameter(0, String.class);
 
+    LOG.info("TODO: Here3");
     final Transaction transaction;
     try {
       transaction = decodeRawTransaction(rawTransaction);
@@ -75,8 +78,10 @@ public class EthSendRawTransaction implements JsonRpcMethod {
           requestContext.getRequest().getId(), JsonRpcError.INVALID_PARAMS);
     }
 
+    LOG.info("TODO: Here4");
     final ValidationResult<TransactionInvalidReason> validationResult =
         transactionPool.get().addLocalTransaction(transaction);
+    LOG.info("TODO: Validation Result: {}", validationResult);
     return validationResult.either(
         () ->
             new JsonRpcSuccessResponse(

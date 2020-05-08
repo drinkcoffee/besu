@@ -14,6 +14,8 @@
  */
 package org.hyperledger.besu.ethereum.mainnet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hyperledger.besu.config.experimental.ExperimentalEIPs;
 import org.hyperledger.besu.crypto.SECP256K1;
 import org.hyperledger.besu.ethereum.core.AcceptedTransactionTypes;
@@ -35,6 +37,7 @@ import java.util.Optional;
  * {@link Transaction}.
  */
 public class MainnetTransactionValidator implements TransactionValidator {
+  private static final Logger LOG = LogManager.getLogger();
 
   private final GasCalculator gasCalculator;
 
@@ -67,6 +70,10 @@ public class MainnetTransactionValidator implements TransactionValidator {
     this.gasCalculator = gasCalculator;
     this.disallowSignatureMalleability = checkSignatureMalleability;
     this.chainId = chainId;
+    LOG.info("TODO: Chain Id present: {}", this.chainId.isPresent());
+    if (this.chainId.isPresent()) {
+      LOG.info("TODO: Chain Id: {}", this.chainId.get());
+    }
     this.maybeEip1559 = maybeEip1559;
     this.acceptedTransactionTypes = acceptedTransactionTypes;
   }
@@ -157,6 +164,8 @@ public class MainnetTransactionValidator implements TransactionValidator {
 
   public ValidationResult<TransactionInvalidReason> validateTransactionSignature(
       final Transaction transaction) {
+    LOG.info("Chain Id Present: {}", chainId.isPresent());
+
     if (chainId.isPresent()
         && (transaction.getChainId().isPresent() && !transaction.getChainId().equals(chainId))) {
       return ValidationResult.invalid(
